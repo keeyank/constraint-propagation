@@ -2,10 +2,11 @@
 #define CONNECTOR_H
 
 #include <vector>
-
-class Connector; // since constraint.h uses Connector
+#include <iostream>
 
 #include "constraint.h"
+
+class Constraint;
 
 // Connectors hold values, which are attached to constraints.
 // Corresponds to symbols within a mathematical equations.

@@ -9,9 +9,9 @@ void Connector::addConstraint(Constraint* c) {
 }
 
 void Connector::setVal(double val) {
-    if (hasValue && value != val)
+    if (hasValue)
         throw std::runtime_error("Connector::setVal: "
-            "Tried to overwrite a previously set value.");
+            "Tried to set value when a value already exists.");
     hasValue = true;
     value = val;
 
