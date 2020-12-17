@@ -25,7 +25,7 @@ public:
     void forgetVal();
 
     bool isConst() const { return isCnst; }
-    void makeConst() { isCnst = true; }
+    void makeConst();
 
     void addConstraint(Constraint* c);
 
