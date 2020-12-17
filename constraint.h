@@ -16,6 +16,8 @@ class Constraint {
 public:
     Constraint(const std::initializer_list<Connector*>& connectors);
     virtual void notify() = 0;
+    void forgetCascade();
+    
 private:
     std::vector<Connector*> connectrs;
 };
@@ -35,6 +37,15 @@ private:
 class AdderConstraint : public Constraint {
 public:
     AdderConstraint(Connector* cn1, Connector* cn2, Connector* c3);
+    void notify();
+private:
+    Connector *c1, *c2, *c3;
+};
+
+// c1 = c2 * c3;
+class MulterConstraint : public Constraint {
+public:
+    MulterConstraint(Connector* cn1, Connector* cn2, Connector* c3);
     void notify();
 private:
     Connector *c1, *c2, *c3;

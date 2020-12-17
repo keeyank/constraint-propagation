@@ -17,9 +17,10 @@ public:
         : hasValue{true}, value{val} { }
 
     bool hasVal() const { return hasValue; }
-    double val() const { return value; }
+    double val() const;
 
     void setVal(double val);
+    void forgetVal();
 
     void addConstraint(Constraint* c);
 
@@ -27,6 +28,11 @@ private:
     void notifyConstraints() {
         for (Constraint *c : constraints)
             c->notify();
+    }
+
+    void notifyConstraintsForget() {
+        for (Constraint *c : constraints)
+            c->forgetCascade();
     }
 
     bool hasValue = false;

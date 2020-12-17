@@ -27,7 +27,20 @@ int main() {
 
     a2summand2.setVal(3);
 
-    cout << 
+    cout << equals << equals2 << a1 << a2;
+
+    Connector m1prod, a2multyguy;
+    MulterConstraint m1 {&m1prod, &a2sum, &a2multyguy};
+
+    cout << endl << m1 << endl;
+
+    m1prod.setVal(10);
+
+    cout << equals << equals2 << a1 << a2 << m1 << endl;
+
+    m1prod.forgetVal();
+
+    cout << equals << equals2 << a1 << a2 << m1 << endl;
 
     return 0;
 }
