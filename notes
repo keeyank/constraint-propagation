@@ -1,0 +1,2 @@
+1. 
+Notice all the runtime error checks in the selectors of connector. This is how we ensure that the state of connector is valid. E.g., in makeConst, we ensure that the connector actually has a value. This way, we can never accidentally call makeConst while connector does not have a value.

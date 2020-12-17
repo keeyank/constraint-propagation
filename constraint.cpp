@@ -12,7 +12,7 @@ Constraint::Constraint(const std::initializer_list<Connector*> &connectors)
 
 void Constraint::forgetCascade() {
     for (Connector *c : connectrs) {
-        if (c->hasVal() /* and c is non-const */)
+        if (c->hasVal() && !c->isConst())
             c->forgetVal();
     }
 }

@@ -38,9 +38,22 @@ int main() {
 
     cout << equals << equals2 << a1 << a2 << m1 << endl;
 
+    Connector hi1 {1}, hi2 {2}, hi3;
+    AdderConstraint hi_there {&hi1, &hi2, &hi3};
+
     m1prod.forgetVal();
 
-    cout << equals << equals2 << a1 << a2 << m1 << endl;
+    cout << equals << equals2 << a1 << a2 << m1 << hi_there << endl;
 
+    Connector constGuy {1, true};
+    Connector nonconstGuy;
+    cout << constGuy << nonconstGuy << endl;
+
+    EqualsConstraint eqwalz {&constGuy, &nonconstGuy};
+    cout << eqwalz;
+    nonconstGuy.forgetVal();
+    cout << eqwalz;
+    // This is weird - we should make it so if all other connectors in a
+    // guy is const, so is  CHECK NOTEBOOK.
     return 0;
 }
