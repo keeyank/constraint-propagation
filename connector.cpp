@@ -38,7 +38,11 @@ void Connector::makeConst() {
     if (!hasValue)
         throw std::runtime_error("Connector::makeConst: "
             "Connector must have a value before being made const");
+    if (isCnst)
+        throw std::runtime_error("Connector::makeConst: "
+            "Tried to make a connector const twice");
     isCnst = true; 
+    notifyConstraintsConst();
 }
 
 void Connector::addConstraint(Constraint* c) {
@@ -48,5 +52,6 @@ void Connector::addConstraint(Constraint* c) {
 std::ostream &operator<<(std::ostream &os, const Connector &c) {
     if (c.isConst()) 
         os << "(const) ";
-    return c.hasVal() ? os << c.val() : os << "?";
+    return c.hasVal() ? os << c.val() 
+        : os << "?";
 }

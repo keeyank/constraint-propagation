@@ -11,6 +11,7 @@ class Constraint;
 /*
 Connectors hold values, which are attached to constraints.
 Corresponds to symbols within a mathematical equations.
+Class invariant: Const connectors will always have a value.
 */
 class Connector {
 public:
@@ -32,12 +33,17 @@ public:
 private:
     void notifyConstraints() {
         for (Constraint *c : constraints)
-            c->notify();
+            c->notifyVal();
     }
 
     void notifyConstraintsForget() {
         for (Constraint *c : constraints)
-            c->forgetCascade();
+            c->notifyForget();
+    }
+
+    void notifyConstraintsConst() {
+        for (Constraint *c : constraints)
+            c->notifyConst();
     }
 
     bool hasValue = false, isCnst = false;

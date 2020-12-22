@@ -1,7 +1,32 @@
 #include "connector.h"
 #include "constraint.h"
 
+/* Utility functions */
+
+bool inline closeEnough(int a, int b) {
+    static constexpr double accuracy {.01};
+    return abs(a - b) < accuracy;
+}
+
 /* Constraint generic interface */
+
+/*
+If a connector is determined to be const (which occurs when all other
+connectors except it are const), return a pointer to that connector.
+Else, return nullptr.
+*/
+Connector* Constraint::getConstDetermined() {
+    unsigned constCount {0};
+    Connector *nonConst;
+    for (Connector *c : connectrs) {
+        if (c->isConst()) ++constCount;
+        else nonConst = c;
+    }
+
+    if (constCount == connectrs.size() - 1)
+        return nonConst;
+    else return nullptr;
+}
 
 Constraint::Constraint(const std::initializer_list<Connector*> &connectors) 
     : connectrs{connectors.begin(), connectors.end()} 
@@ -10,7 +35,13 @@ Constraint::Constraint(const std::initializer_list<Connector*> &connectors)
         c->addConstraint(this);
 }
 
-void Constraint::forgetCascade() {
+void Constraint::notifyConst() {
+    Connector* determined = getConstDetermined();
+    if (determined)
+        determined->makeConst();
+}
+
+void Constraint::notifyForget() {
     for (Connector *c : connectrs) {
         if (c->hasVal() && !c->isConst())
             c->forgetVal();
@@ -29,12 +60,13 @@ EqualsConstraint::EqualsConstraint
 (Connector *connect1, Connector *connect2) 
     : Constraint{{connect1, connect2}}, c1{connect1}, c2{connect2}
 {
-    notify();
+    notifyVal();
+    notifyConst();
 }
 
-void EqualsConstraint::notify() {
+void EqualsConstraint::notifyVal() {
     if (c1->hasVal() && c2->hasVal()) {
-        if (c1->val() != c2->val())
+        if (!closeEnough(c1->val(), c2->val()))
             throw std::runtime_error(
                 "EqualsConstraint::EqualsConstraint: "
                 "Contradiction");
@@ -53,12 +85,13 @@ AdderConstraint::AdderConstraint
 (Connector* cn1, Connector* cn2, Connector* cn3)
     : Constraint{{cn1, cn2, cn3}}, c1{cn1}, c2{cn2}, c3{cn3}
 {
-    notify();
+    notifyVal();
+    notifyConst();
 }
 
-void AdderConstraint::notify() {
+void AdderConstraint::notifyVal() {
     if (c1->hasVal() && c2->hasVal() && c3->hasVal()) {
-        if (c1->val() != c2->val() + c3->val())
+        if (!closeEnough(c1->val(), c2->val() + c3->val()))
             throw std::runtime_error(
                 "AdderConstraint::AdderConstraint: "
                 "Contradiction");
@@ -73,16 +106,19 @@ void AdderConstraint::notify() {
     }
 }
 
+/* MulterConstraint */
+
 MulterConstraint::MulterConstraint
 (Connector* cn1, Connector* cn2, Connector* cn3)
     : Constraint{{cn1, cn2, cn3}}, c1{cn1}, c2{cn2}, c3{cn3}
 {
-    notify();
+    notifyVal();
+    notifyConst();
 }
 
-void MulterConstraint::notify() {
+void MulterConstraint::notifyVal() {
     if (c1->hasVal() && c2->hasVal() && c3->hasVal()) {
-        if (c1->val() != c2->val() * c3->val())
+        if (!closeEnough(c1->val(), c2->val() * c3->val()))
             throw std::runtime_error(
                 "MulterConstraint::MulterConstraint: "
                 "Contradiction");

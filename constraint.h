@@ -15,10 +15,13 @@ class Constraint {
 
 public:
     Constraint(const std::initializer_list<Connector*>& connectors);
-    virtual void notify() = 0;
-    void forgetCascade();
+    virtual void notifyVal() = 0;
+    void notifyConst();
+    void notifyForget();
     
 private:
+    Connector* getConstDetermined();
+    
     std::vector<Connector*> connectrs;
 };
 std::ostream& operator<<(std::ostream& os, const Constraint& c);
@@ -28,7 +31,7 @@ class EqualsConstraint : public Constraint {
 public:
     EqualsConstraint(Connector* connect1, Connector* connect2);
 
-    void notify();
+    void notifyVal();
 private:
     Connector *c1, *c2;
 };
@@ -37,7 +40,7 @@ private:
 class AdderConstraint : public Constraint {
 public:
     AdderConstraint(Connector* cn1, Connector* cn2, Connector* c3);
-    void notify();
+    void notifyVal();
 private:
     Connector *c1, *c2, *c3;
 };
@@ -46,7 +49,7 @@ private:
 class MulterConstraint : public Constraint {
 public:
     MulterConstraint(Connector* cn1, Connector* cn2, Connector* c3);
-    void notify();
+    void notifyVal();
 private:
     Connector *c1, *c2, *c3;
 };
